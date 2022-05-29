@@ -55,6 +55,8 @@ class MainWindow(AbstractView):
             clock = Clock()
             clock.tick(self._fps)
 
+            self._started = True
+
         content_window: ContentGameOfLiveView = ContentGameOfLiveView(self._model, self._screen)
         content_window.show()
 
