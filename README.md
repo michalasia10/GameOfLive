@@ -8,5 +8,5 @@
 ### Instruction:
 
 * Space - pause game
-* Enter - unpase game
+* Enter - unpause game
 * Esc - exit game
