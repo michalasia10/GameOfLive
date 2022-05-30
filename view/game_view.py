@@ -1,13 +1,18 @@
+import logging
+
+import pygame.font
 from pygame import display
 from pygame import draw
 from pygame.time import Clock
 
-from config.settings import ColorEnum, OFFSET, FPS
+from config.settings import ColorEnum, OFFSET, FPS, HEIGHT, WIDTH
 from models.game import GameOfLive
-from view.abstract import AbstractView
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
-class ContentGameOfLiveView(AbstractView):
+class ContentGameOfLiveView:
     def __init__(self, model: GameOfLive, screen, active_cell_color: ColorEnum = ColorEnum.BLUE_V2.value,
                  inactive_cell_color: ColorEnum = ColorEnum.WHITE.value, offset: int = OFFSET):
         self._model = model
@@ -17,8 +22,12 @@ class ContentGameOfLiveView(AbstractView):
         self._offset = offset
 
     def _draw_pause_window(self):
-        # draw pause in main
-        pass
+        font = pygame.font.SysFont('Comic Sans MS', 30)
+        text_surface = font.render('Pause', False, (0, 0, 0))
+        surface = pygame.Surface(text_surface.get_size())
+        surface.fill(ColorEnum.GREEN.value)
+        surface.blit(text_surface, (0, 0))
+        self._screen.blit(surface, (HEIGHT / 2, WIDTH / 2))
 
     def _draw_cells(self):
         for row in range(self._model.rows):
@@ -31,7 +40,7 @@ class ContentGameOfLiveView(AbstractView):
                     color = self._active_color
 
                 border = self._model.scale - self._offset
-                draw.rect(self._screen, color, color, x_scaled, y_scaled, border, border)
+                draw.rect(self._screen, color, [x_scaled, y_scaled, border, border])
 
     def show(self):
         if self._model.is_paused:
@@ -40,13 +49,17 @@ class ContentGameOfLiveView(AbstractView):
         self._draw_cells()
 
 
-class MainWindow(AbstractView):
+class MainWindow:
 
     def __init__(self, model: GameOfLive, screen, fps: int = FPS):
         self._model = model
         self._fps = fps
         self._screen = screen
         self._started: bool = False
+
+    @property
+    def screen(self):
+        return self._screen
 
     def show(self):
         if not self._started:

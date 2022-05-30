@@ -2,12 +2,11 @@ import logging
 
 import numpy as np
 
-from models.abstract import Game
-
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-class GameOfLive(Game):
+class GameOfLive:
 
     def __init__(self, width: int, height: int, scale: int):
         self._width = width
@@ -21,6 +20,7 @@ class GameOfLive(Game):
         self._shape = (self._rows, self._columns)
         self._board = np.random.randint(0, 2, self._shape)
         self._pause = False
+        self._closed = False
 
     @property
     def scale(self):
@@ -29,6 +29,18 @@ class GameOfLive(Game):
     @property
     def is_paused(self):
         return self._pause
+
+    @property
+    def is_closed(self):
+        return self._closed
+
+    @is_paused.setter
+    def is_paused(self, value):
+        self._pause = value
+
+    @is_closed.setter
+    def is_closed(self, value):
+        self._closed = value
 
     @property
     def rows(self):
@@ -68,7 +80,6 @@ class GameOfLive(Game):
     def run(self):
 
         if self._pause:
-            logger.warning("Game is Paused")
             return
 
         next = np.ndarray(shape=(self._shape))
